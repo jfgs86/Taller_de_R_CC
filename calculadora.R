@@ -27,5 +27,12 @@ log(3,10) #LOGARITMO DE 3 EN BASE 10
 
 abs(-4.5) #VAOR ABSOLUTO
 
+#Para averiguar un porquito más sobre las funciones matemáticas en R
+#probar las siguientes órdenes:
+ help("Math")
+ help("Arithmetic")
+ help("Trig")
+ help("Log")
+ help("Special")
 
 
