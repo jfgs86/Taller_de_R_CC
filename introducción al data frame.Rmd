@@ -1,0 +1,30 @@
+---
+title: "Introducción al Data Frame"
+author: "Juan Francisco Gracia Sercado"
+date: "17/7/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<h1><b>**Introducción**</b></h1>
+<p>Los data frames son estructuras de datos bidimensionales (rectangulares) que pueden contener datos de diferentes tipos (númericos, cádenas de caracteres, factores, lógicos), por lo tanto, son heterogéneas.</p>
+
+<p>
+Un data frames se puede asimilar como una versión más flexible de una matriz. Mientras que en una matriz todas las celdas deben contener datos del mismo tipo, los renglones de un data frame admiten datos de distintos tipos, pero sus columnas conservan la restricción de contener datos de un sólo tipo.
+</p>
+
+<p> 
+En términos generales, los renglones en un data frame representan casos, individuos u observaciones, mientras que las columnas representan atributos, rasgos o variables.
+</p>
+
+<h1>**Datos precargados en R**</h1>
+
+```{r pressure, echo=FALSE}
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
