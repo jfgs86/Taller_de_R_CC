@@ -1,0 +1,195 @@
+---
+title: "Creación de un Data Frame"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+autor: Juan Francisco Gracia Sercado
+---
+
+<b>Vamos a trabajar con  las preguntas 8, 9, 13 y 14 del capítulo 3 del libro: <br></b>
+<b>Producto, Excedente y Crecimiento de José Carlos Valenzuela Feijóo</b>
+
+<u><b><i>NOTAS </i></b> </u>
+
+<b>PARA CALCULAR EL TRABAJO VIVO DISPONIBLE <i>Tvd</i>:</b>
+
+<math>$Tvd = (N)(\frac{Na}{N})(\frac{Nap}{Na}) (Jta) = (Nap)(Jta)$ <br>
+<ul>
+<li>$N =$ Población Total</li> 
+<li>$Na =$ Población Ocupada</li>
+<li>$Nap =$ Poblacion Ocupada Productiva</li>
+<li>$Jta =$ Jornada de Trabajo Anual</li>
+</ul>
+</math>
+
+<math>
+<ul>
+<li>$\frac{Na}{N} =$ Coeficiente de Ocupados </li>
+<li>$\frac{Nap}{Na} =$ Coeficiente de productivos </li>
+</ul>
+</math>
+
+<b>TAMBIÉN SE PUEDE CALCULAR DE LA SIGUIENTE FORMA<br></b>
+
+<math>
+$Tvd = N (\frac{Net}{N})(\frac{Nea}{Net})(\frac{Na}{Nea})(\frac{Nap}{Na})(Jta) = (Nap) (Jta)$<br>
+<ul>
+<li>$Net =$ Población en Edad de Trabajar </li>
+<li>$Nea =$ Población Economicamente Activa</li>
+</ul>
+</math>
+
+
+<b><u>Pregunta 8</u></b>
+
+En una economía imaginaria, en cierto periodo, se observan los siguientes fenómenos:<br>
+
+a) La población total se duplica. <br>
+b) Se altera  la estructura demográfica de tal modo que la población en edad de trabajar pasa de 35 a 30%. <br>
+c) De la población en edad de trabajar, los ocupados cosntituían 50%  al empezar el periodo, y 50% a final del periodo.<br>
+d) Los ocupado en tareas productivas representan 65% de la ocupación total al inicio del periodo, y 50% al finalizr el periodo.<br>
+e) La jornada de trabajo anual permanece constante.<br>
+
+<b>¿Cuál fue la variación de la masa de trabajo vivo productivo disponible</b>
+<br>
+<br>
+<b><u>SOLUCIÓN</u></b>
+ 
+
+```{r}
+
+datos<-data.frame(
+  "variable" = as.character(c("N", "Net", "Na", "Nap","Jta")),
+  "periodo 1 en porciento" = as.numeric(c(100, 35, 50, 65, 100)),
+  "periodo 2 en porciento" = as.numeric(c(200, 30, 50, 50, 100))
+)
+
+datos
+
+```
+
+Calculamos 
+
+```{r}
+periodo1<-data.frame(
+  "variable" = as.character(c("N", "Net", "Na", "Nap","Jta")),
+  "porcientoP1" = as.numeric(c(100, 35, 50, 65, 100))
+)
+```
+<br>Creamo una nueva variable valor, la cual es resultado de una regla de tres </br>
+
+<math> 
+
+$valorP1_{i+1} = \frac{porcientoP1_{i+1}* valorP1_{i}}{100}$<br>
+$i = 1,2,3$<br>
+<ul>
+<li>El $valorP1_{1} = 1$ Población al incio del periodo</li>
+<li>El $valorP1_{5} = 1$ Jornada de trabajo anual al inicio del periodo</li>
+</math>
+
+```{r}
+periodo1$valorP1 <-numeric(dim(datos)[1])
+periodo1$valorP1[1] <- 1 
+periodo1$valorP1[5] <- 1
+```
+<br>Realizamos un ciclo for para calcular la regla de tres </br>
+
+
+
+```{r}
+for (i in 1:3) {
+  periodo1$valorP1[i+1] <- (periodo1$porcientoP1[i+1]*periodo1$valorP1[i])/100
+  
+}
+
+periodo1
+```
+
+```{r}
+periodo2<-data.frame(
+  "variable" = as.character(c("N", "Net", "Na", "Nap","Jta")),
+  "porcientoP2" = as.numeric(c(200, 30, 50, 50, 100))
+)
+```
+<br>Creamo una nueva variable valor, la cual es resultado de una regla de tres </br>
+<math> 
+
+$valorP2_{i+1} = \frac{porcientoP2_{i+1}* valorP2_{i}}{100}$<br>
+$i = 1,2,3$<br>
+<ul>
+<li>El $valorP2_{1} = 2$ Población al finalizar del periodo esta se duplica</li>
+<li>El $valorP2_{5} = 1$ Jornada de trabajo anual al finalizar del periodo. Esta se mantiene constante</li>
+</math>
+
+```
+
+
+```{r}
+periodo2$valorP2 <-numeric(dim(datos)[1])
+periodo2$valorP2[1] <- 2
+periodo2$valorP2[5] <- 1
+```
+<br>Realizamos un ciclo for para calcular la regla de tres </br>
+
+
+
+```{r}
+for (i in 1:3) {
+  periodo2$valorP2[i+1] <- (periodo2$porcientoP2[i+1]*periodo2$valorP2[i])/100
+  
+}
+
+periodo2
+```
+
+<b> Creamos la variable datos2, la cual contiene las siguientes variables:<br>
+variable<br>
+valorP1<br>
+valorP2</b>
+
+```{r, warning=F, message=F}
+library(dplyr)
+
+datos2 <- cbind.data.frame(datos$variable, periodo1$valorP1, periodo2$valorP2)
+datos2
+```
+<b>Agregmos la variable tasa_de_crecimiento </b>
+
+```{r}
+datos2$tasa_de_crecimiento <- numeric(dim(datos2)[1])
+
+for (i in 1:dim(datos2)[1]) {
+  datos2$tasa_de_crecimiento[i] <- (periodo2$valorP2[i]/periodo1$valorP1[i])-1
+  
+}
+
+
+datos2
+```
+
+<b>CALCULAMOS EL TRABAJO VIVO DISPONIBLE PARA AMBOS PERIODOS </b
+
+<math> $Tvd_i = (Nap_i) (Jta_i)$<br>
+$i = 1,2$ 
+</math>
+
+```{r}
+Tvd1<- datos2$`periodo1$valorP1`[4]*datos2$`periodo1$valorP1`[5]
+cat("El trabajo vivo disponible para el periodo 1 es: ", Tvd1)
+
+
+Tvd2<- datos2$`periodo2$valorP2`[4]*datos2$`periodo2$valorP2`[5]
+
+cat("El trabajo vivo disponible para el periodo 2 es: ", Tvd2)
+```
+
+<b>CALCULAMOS LA VARIACIÓN DEL TRABAJO VIVO DISPONIBLE </b>
+
+```{r}
+variacionTvd <- (Tvd2/Tvd1)-1
+cat("La variación del trabajo vivo disponible es: ", variacionTvd )
+
+```
+
+
